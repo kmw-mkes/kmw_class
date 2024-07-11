@@ -1,0 +1,57 @@
+CRUD
+Read(SELECT-WHERE)
+1.  tb_score 테이블에서 국어 점수만 출력하시오.
+	SEELCT SCORE_SUBJECT, SCORE_POINT
+	FROM tb_score
+	WHERE score_subject = '국어';
+
+2. tb_student_info 테이블에서 2학년 학생만 출력하시오.
+	SELECT *
+	FROM tb_student_info
+	WHERE student_grade = 2;
+
+3. tb_student_info 테이블에서 서구에 있는 고등학교에 다니는 학생들을 출력하시오.
+	SELECT *
+	FROM tb_student_info
+	WHERE student_school_area = '서구';
+
+Read(SELECT - GROUP BY) 
+1. tb_score 테이블에서 국어 시험을 본 학생의 수를 출력하시오.
+	SELECT score_subject, count(student_id)
+	FROM tb_score
+	WHERE score_subject = '국어'
+	GROUP BY score_subejct;
+
+2. tb_student_info 테이블에서 서구에 있는 고등학교를 다니는 학생들의 수를 출력하시오.
+	SELECT student_school_area, count(student_id)
+	FROM tb_student_info
+	WHERE stduent_school_area = '서구'
+	GROUP BY stduent_school_area 
+
+3. tb_student_info 테이블에서  학교, 학년별 학생수를 출력하시오.
+	SELECT student_school, student_grade, count(student_id)
+	FROM tb_student_info
+	GROUP BY student_school, student_grade
+
+4. tb_score 테이블에서 student_id = 1의 국어,영어, 수학의 총점과 평균 점수를 구하시오.
+
+	SELECT student_id, sum(score_point) AS 총점, AVG(score_point) AS 평균점수
+	FROM tb_score
+	WHERE student_id = 1
+	group by student_id;
+
+5. 대전 지역 고등학생들의 과목별 평균점수를 구하시오.
+	SELECT score_subject, avg(score_point)
+	FROM tb_score
+	GROUP BY score_subject
+
+6.  대전 지역 학생들 중 국어점수가 최고점인 학생과 최소점인 학생의 student_id를 구하시오.
+	SELECT score_subject, max(score_point), min(score_point)
+	FROM tb_score
+	GROUP BY score_subject
+
+UPDATE
+1.  tb_student_info 테이블의 홍길동, 홍길순 학생의 주소를 대전 중구로 변경하시오.
+	UPDATE tb_student_info
+	SET addr = '대전 중구'
+	WHERE student_name in ('홍길동', '홍길순');
