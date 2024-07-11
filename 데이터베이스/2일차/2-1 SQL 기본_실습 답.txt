@@ -1,0 +1,36 @@
+2-1 SQL 기본
+ 데이터베이스 생성 -실습
+1.  student라는 이름의 데이터베이스를 생성하시오.
+- CREATE DATABASES 'student';
+
+2. 생성된 student를 화면에 출력하시오.
+- show databases;
+
+3. student 데이터베이스를 선택하시오. 
+- use student;
+
+테이블 생성 및 삭제 - 실습
+1. student_id int, student_name varchar(20) 컬럼을 가진 tb_student_info 테이블을 만드시오.
+- CREATE TABLE tb_student_info(
+	student_id int,
+	student_name varchar(20)
+  );
+
+2. tb_student_info 테이블에 
+	student_grade int,
+	student_school_area varchar(10),
+	student_school varchar(40),
+	addr varhcar(100)
+	4개 컬럼을 추가하시오.
+
+-	alter table tb_student_info add student_grade int;
+	alter table tb_student_info add student_school_area varchar(10);
+	alter table tb_student_info add student_school varchar(40);
+	alter table tb_student_info add addr varchar(100);
+
+3.  student_addr 컬럼 앞에 student_zipcode varchar(6) 컬럼을 추가하시오.
+-	alter table tb_student_info add student_zipcode varchar(6);
+	alter table tb_student_info modify addr varchar(100) after student_zipcode
+
+4. test1_new 테이블을 삭제하시오.
+- 	drop table test1_new;

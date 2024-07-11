@@ -1,0 +1,32 @@
+2-2 MySQL DataType 및 제약조건
+
+제약조건 - Default
+1. 
+	ALTER TABLE tb_student_info MODIFY COLUMN student_grade int DEFAULT 1;
+2.
+	ALTER TABLE tb_student_info ADD student_sex char(1);
+	ALTER TABLE tb_student_info MODIFY COLUMN student_sex char(1) DEFAULT 'M';
+
+제약조건 - NOT NULL
+1. 
+	ALTER TABLE tb_student_info MODIFY COLUMN student_id int NOT NULL;
+	ALTER TABLE tb_student_info MODIFY COLUMN student_school varchar(100) not null;
+
+제약조건 - Unique
+1. 
+	ALTER TABLE tb_student_info add student_number varchar(8);
+	ALTER TABLE tb_student_info MODIFY COLUMN student_number varchar(8) UNIQUE;
+
+제약조건 - Primary key
+1.	
+	CREATE TABLE tb_score(
+		score_idx int,
+		student_id int,
+		score_season varhcar(6),
+		score_subject varchar(20),
+		score_point int
+	);
+
+2. 
+	ALTER TABLE tb_student_info ADD CONSTRAINT PRIMARY KEY(score_idx);
+	
