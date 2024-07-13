@@ -1,0 +1,74 @@
+select - 실습
+1. 학생들 중 서구에 있는 고등학교에 재학중이고, 2학년인 학생 정보를 출력하시오.
+select * 
+from tb_student_info
+where student_school_area = '서구'
+and student_grade = '2';
+
+2. 관평고등학교와 관평여자고등학교의 학생 정보를 출력하시오.
+select *
+from tb_student_info
+where student_school = '관평고등학교'
+OR student_school = '관평여자고등학교';
+
+3. 관평고등학교와 관평여자고등학교의 학생 정보를 LIKE를 사용하여 출력하시오.
+select *
+from tb_student_info
+where student_school like '관평%';
+
+4. 학생정보에서 3학년을 제외한 1,2학년 학생들의 정보를 출력하시오.
+select *
+from tb_student_info
+where student_grade != 3;
+
+select *
+from tb_student_info
+where student_grade in(1,2);
+
+5. 국어점수가 80점이상 90정 이하인 학생 수를 구하시오.
+select count(1)
+from tb_score
+where score_subject = '국어'
+and score_point between 80 and 90;
+
+6. 수학점수가 70점 이상 80점 미만이 아닌 학생 수를 구하시오.
+select count(1)
+from tb_score
+wher score_subject = '수학'
+and score_point < 70
+and score_point >= 80;
+
+7. 김씨 성을 가진 학생정보를 출력하시오.
+select *
+from tb_student_info
+where student_name like '김%';
+
+8. 학생 정보에서 관평고등학교와 대전고등학교를 제외한 나머지 학생 정보를 출력하시오.
+select *
+from tb_student_info
+where student_school not in ('관평고등학교', '대전고등학교');
+
+9. 대전고등학교와 대전 여자고등학교의 학생 수를 출력하시오.
+select student_school, count(student_id)
+from tb_student_info
+where student_school in ('대전고등학교', '대전여자고등학교')
+group by student_school;
+
+10. tb_student_info 테이블에 있는 학생들 정보를 별칭을 주어 출력하시오.
+ (student_id : id, student_name : name, student_school : school, student_school_area : schoolArea)
+
+SELECT   student_id AS 'id',
+	student_name AS 'name',
+	student_school AS 'school',
+	student_school_area AS 'schoolArea'
+FROM tb_student_info
+
+11. tb_student_info 테이블에 있는 학생들의 학년을 기준으로 정렬하시오.(내림차순)
+SELECT	*
+FROM tb_student_info
+ORDER BY student_grade ASC;
+
+12. tb_student_info 테이블에 있는 학생들의 학년을 기준으로 정렬하시오.(오름차순)
+SELECT	*
+FROM tb_student_info
+ORDER BY student_grade DESC;
