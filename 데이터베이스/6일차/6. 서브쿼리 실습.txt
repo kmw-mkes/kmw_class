@@ -1,0 +1,56 @@
+-- 스칼라
+-- 1. tb_student_info 테이블의 데이터를 조회하면서, 서브쿼리를 이용하여 국어, 영어, 수학 점수를 같이 조회하시오.
+SELECT  student_name,
+		student_grade,
+        (select k_sc.score_point from tb_score k_sc where k_sc.score_subject = '국어' and k_sc.student_id = si.student_id) AS '국어',
+        (select e_sc.score_point from tb_score e_sc where e_sc.score_subject = '영어' and e_sc.student_id = si.student_id) AS '영어',
+        (select m_sc.score_point from tb_score m_sc where m_sc.score_subject = '수학' and m_sc.student_id = si.student_id) AS '수학'
+FROM tb_student_info si;
+-- 2. 서구에 있는 고등학교 1학년들의 평균 점수를 구하시오.
+SELECT  si.student_name,
+		si.student_grade,
+        si.student_school_area,
+        si.student_school,
+        (SELECT AVG(sc.score_point) FROM tb_score sc WHERE sc.student_id = si.student_id) AS '평균점수'
+FROM tb_student_info si
+WHERE si.student_school_area = '서구'
+AND si.student_grade = 1;
+
+-- 3. 1학년 학생들의 학교 정보를 조회하시오.
+SELECT si.student_name,
+		si.student_grade,
+        (select sc.school_area from tb_school_info sc where sc.school_idx = si.school_idx) AS school_area,
+        (select sc.school_name from tb_school_info sc where sc.school_idx = si.school_idx) AS school_name,
+        (select sc.school_addr from tb_school_info sc where sc.school_idx = si.school_idx) AS school_addr,
+        (select sc.school_phone from tb_school_info sc where sc.school_idx = si.school_idx) AS school_phone
+FROM tb_student_info_test si
+WHERE si.student_grade = 1;
+
+-- 4. 중구에 있는 고등학교 학생들의 정보를 조회하시오.(출력 내용 : 학생이름, 학년, 학교명, 우편번호, 학생주소)
+SELECT  si.student_name,
+		si.student_grade,
+        (SELECT sci.school_name FROM tb_school_info sci WHERE si.school_idx = sci.school_idx) AS school_name,
+        si.zipcode,
+        si.addr
+FROM tb_student_info_test si
+WHERE si.school_idx in (
+	SELECT sc.school_idx 
+    FROM tb_school_info sc
+    WHERE sc.school_area = '중구'
+);
+
+-- 5. 중구에 있는 고등학교 학생들 중 평균성적이 80점 미만인 학생 정보를 출력하시오.
+SELECT student_name,
+		(SELECT sci2.school_name FROM tb_school_info sci2 where sci2.school_idx = si.school_idx) AS '학교 명',
+		student_grade,
+        (select avg(sc2.score_point) from tb_score sc2 where sc2.student_id = si.student_id) AS '평균성적'
+FROM tb_student_info_test si
+WHERE si.school_idx in (
+	SELECT sci.school_idx FROM tb_school_info sci WHERE sci.school_area = '중구'
+)
+AND si.student_id in (
+	SELECT sc.student_id
+    FROM tb_score sc
+    GROUP BY sc.student_id
+    HAVING AVG(sc.score_point) < 80
+);
