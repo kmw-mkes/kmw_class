@@ -1,0 +1,69 @@
+-- 1.유성구 소재 고등학교에 재학중인  1학년 학생들의 평균점수를 조회하시오.
+SELECT  si.student_name,
+		si.student_grade,
+        sc.school_area,
+        sc.school_name,
+        avg(p.score_point) AS '평균성적'
+FROM tb_student_info_test si
+LEFT JOIN tb_school_info sc
+ON si.school_idx = sc.school_idx
+LEFT JOIN tb_score p
+ON si.student_id = p.student_id
+WHERE sc.school_area = '서구'
+AND si.student_grade = 1
+group by si.student_id;
+
+-- 2. 1학년 학생들의 학교정보를 조회하시오.
+SELECT  student.student_name,
+		student.student_grade,
+        school.school_area,
+        school.school_name,
+        school.school_addr,
+        school.school_phone
+FROM tb_student_info_test student
+LEFT JOIN tb_school_info school
+ON student.school_idx = school.school_idx;
+
+-- 3. 중구 소재 고등학교에 재학중인 학생들의 정보를 조회하시오.
+       (출력 내용 : 학생이름, 학년, 학교명, 우편번호, 학생주소)
+SELECT  student.student_name,
+		student.student_grade,
+        school. school_name,
+        student.zipcode,
+        student.addr
+FROM tb_student_info_test student
+LEFT JOIN tb_school_info school
+ON student.school_idx = school.school_idx
+WHERE school.school_area = '중구';
+
+-- 4. 중구 소재 고등학교에 재학중인 학생들 중 평균성적이 80점 미만인 학생 정보를 출력하시오
+SELECT  
+		school.school_name,
+        student.student_name,
+        student.student_grade,
+        avg(score.score_point) AS '평균성적'
+FROM tb_student_info_test student
+LEFT JOIN tb_school_info school
+ON student.school_idx = school.school_idx
+LEFT JOIN tb_score score
+ON student.student_id = score.student_id
+GROUP BY student.student_id
+HAVING avg(score.score_point) < 80;
+
+SELECT T.*
+FROM (SELECT  student.student_name,
+		student.student_grade,
+        school.school_area,
+        school.school_name,
+        school.school_addr,
+        school.school_phone,
+        avg(score.score_point) AS avgPoint
+FROM tb_student_info_test student
+LEFT JOIN tb_school_info school
+ON student.school_idx = school.school_idx
+LEFT JOIN tb_score score
+ON student.student_id = score.student_id
+WHERE school.school_area = '중구'
+GROUP BY student.student_id) T
+WHERE T.avgPoint <80;
+
