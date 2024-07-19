@@ -1,0 +1,49 @@
+-- 1. 학교별 졸업생들의 정보를 출력하시오.
+SELECT school.school_name,
+		school.school_area,
+        student.student_name
+FROM tb_school_info school
+LEFT JOIN tb_student_info student
+ON school.school_id = student.school_id
+AND student.student_graduate_yn = 'Y';
+
+-- 2. 졸업생 중에서 2023년에 수능 시험을 보지 않은 학생의 정보(이름만)를 출력하시오.
+SELECT  student.student_name
+FROM tb_student_info student
+LEFT JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2023'
+WHERE student.student_graduate_yn = 'Y'
+AND score.score_id is null
+;
+-- 3. 2024년 수능 성적 상위 5명의 학생정보를 출력하시오.
+SELECT  student.student_name,
+		if(student.student_graduate_yn = 'Y', '졸업생', '재학생') AS graduate_yn,
+        (select school.school_name from tb_school_info school where school.school_id = student.school_id) AS school_name,
+        sum(score.score_point) AS '수능성적'
+FROM tb_student_info student
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+group by student.student_id
+order by sum(score.score_point) desc
+limit 5;
+
+-- 4.2024년 졸업생과 재학생의 수능 성적 평균을 출력하시오.
+SELECT IF(T.student_graduate_yn = 'Y', '졸업생', '재학생') AS '분류',
+		AVG(T.sumPoint) AS '평균 수능성적'
+FROM (SELECT student.student_graduate_yn,
+		student.student_id,
+        sum(score.score_point) as sumPoint
+FROM tb_student_info student
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+WHERE score.student_id is not null
+group by student_graduate_yn, student.student_id) T
+GROUP BY T.student_graduate_yn;
+
+
+;
+
+
