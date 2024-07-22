@@ -1,0 +1,102 @@
+4.2024년 졸업생과 재학생의 수능 성적 평균을 출력하시오.
+1)
+SELECT IF(T.student_graduate_yn = 'Y', '졸업생', '재학생') AS '분류',
+		AVG(T.sumPoint) AS '평균 수능성적'
+FROM (SELECT student.student_graduate_yn,
+		student.student_id,
+        sum(score.score_point) as sumPoint
+FROM tb_student_info student
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+group by student_graduate_yn, student.student_id) T
+GROUP BY T.student_graduate_yn;
+
+2)
+SELECT 	
+		student.student_graduate_yn,
+		avg(score.score_point) AS sumPoint
+FROM tb_student_info student
+INNER JOIN (select student_id, score_season, sum(score_point) as score_point
+			from tb_score
+            WHERE score_season = '2024'
+            group by student_id) score
+ON student.student_id = score.student_id
+GROUP BY student.student_graduate_yn;
+
+3)
+SELECT student.student_graduate_yn,
+		(SELECT SUM(score.score_point)/count(student.student_id) 
+         FROM tb_score score
+         WHERE score.score_season = '2024'
+         AND score.student_id in (
+			SELECT st.student_id
+            FROM tb_student_info st
+            WHERE st.student_graduate_yn =  student.student_graduate_yn)
+         ) AS '평균성적'
+FROM tb_student_info student
+GROUP BY student.student_graduate_yn;
+
+-- 1. 2024년 동구 소재 학교 소속 학생들의 수능 성적을 조회하시오.
+SELECT  school.school_area,
+		school.school_name,
+		student.student_id,
+		student.student_name,
+        if(student.student_graduate_yn = 'Y', '졸업생', '재학생') AS '학생구분',
+        sum(score.score_point) AS '수능성적'
+FROM tb_student_info student
+INNER JOIN tb_school_info school
+ON student.school_id = school.school_id
+AND school.school_area = '동구'
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+GROUP BY student.student_id;
+
+-- 2. 2024년 남자고등학교를 재학중인 학생들의 수능 성적을 조회하시오.
+1)
+SELECT  school.school_area,
+		school.school_name,
+		student.student_id,
+        student.student_name,
+	    if(student.student_graduate_yn = 'Y', '졸업생', '재학생') AS '학생구분',
+        (select sum(score.score_point)
+		 from tb_score score
+         WHERE score.student_id = student.student_id
+         AND score.score_season = '2024') AS '수능성적'
+FROM tb_student_info student
+INNER JOIN tb_school_info school
+ON student.school_id = school.school_id
+AND !(school.school_name like '%여자%');
+
+2)
+SELECT  school.school_area,
+		school.school_name,
+		student.student_id,
+		student.student_name,
+        if(student.student_graduate_yn = 'Y', '졸업생', '재학생') AS '학생구분',
+        sum(score.score_point) AS '수능성적'
+FROM tb_student_info student
+INNER JOIN tb_school_info school
+ON student.school_id = school.school_id
+AND school.school_name not like ('%여자%')
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+GROUP BY student.student_id;
+
+-- 3. 2024년 학교별 수능성적의 평균성적을 조회하시오.
+SELECT T.school_name, avg(T.sumPoint)
+FROM (SELECT 	school.school_name,
+				school.school_id,
+				student.student_graduate_yn,
+				student.student_id,
+				sum(score.score_point) as sumPoint
+		FROM tb_student_info student
+		INNER JOIN tb_school_info school
+		ON school.school_id = student.school_id
+		INNER JOIN tb_score score
+		ON student.student_id = score.student_id
+		AND score.score_season = '2024'
+		group by school.school_id, student.student_id) T
+GROUP BY T.school_id;
