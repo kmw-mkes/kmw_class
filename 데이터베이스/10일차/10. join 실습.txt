@@ -1,0 +1,125 @@
+-- 1. 대전 지역 학생들의 2024년 수능 성적 중 언어 과목의 최고점을 얻은 학생의 정보를 구하시오.
+select  student.student_name,
+		if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        score.score_season AS '수능 년도',
+        score.score_subject AS '과목',
+        score.score_point AS '점수'
+from tb_student_info student
+inner join tb_score score
+on student.student_id = score.student_id
+AND score.score_season = '2024'
+AND score.score_subject = '언어'
+order by score.score_point desc
+limit 1;
+
+select  student.student_name,
+		if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        score.score_season AS '수능 년도',
+        score.score_subject AS '과목',
+        score.score_point AS '점수'
+from tb_student_info student
+inner join tb_score score
+on student.student_id = score.student_id
+AND score.score_season = '2024'
+AND score.score_subject = '언어'
+and score.score_point = (
+	select max(sc.score_point)
+    FROM tb_score sc
+    WHERE sc.score_season = '2024'
+    and sc.score_subject = '언어'
+);
+
+-- 2. 대전 지역 학생들의 2024년 수능 성적 중 언어 과목의 최고점을 얻은 학생의 정보를 구하시오.
+select  student.student_name,
+		if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        score.score_season AS '수능 년도',
+        score.score_subject AS '과목',
+        score.score_point AS '점수'
+from tb_student_info student
+inner join tb_score score
+on student.student_id = score.student_id
+AND score.score_season = '2024'
+AND score.score_subject = '수학'
+order by score.score_point asc
+limit 1;
+
+select  student.student_name,
+		if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        score.score_season AS '수능 년도',
+        score.score_subject AS '과목',
+        score.score_point AS '점수'
+from tb_student_info student
+inner join tb_score score
+on student.student_id = score.student_id
+AND score.score_season = '2024'
+AND score.score_subject = '수학'
+and score.score_point = (
+	select min(sc.score_point)
+    FROM tb_score sc
+    WHERE sc.score_season = '2024'
+    and sc.score_subject = '수학'
+);
+-- 3. 2024년 수능에 응시한 학생들의 성적표를 출력하시오.
+select  school.school_name,
+		student.student_name,
+		if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        (select score.score_point from tb_score score 
+		where score.score_season = '2024' 
+        and score.score_subject = '언어' 
+        and score.student_id = student.student_id) AS '언어',
+        (select score.score_point from tb_score score 
+		where score.score_season = '2024' 
+        and score.score_subject = '영어' 
+        and score.student_id = student.student_id) AS '영어',
+        (select score.score_point from tb_score score 
+		where score.score_season = '2024' 
+        and score.score_subject = '수학' 
+        and score.student_id = student.student_id) AS '수학',
+        (select score.score_point from tb_score score 
+		where score.score_season = '2024' 
+        and score.score_subject = '사회탐구1' 
+        and score.student_id = student.student_id) AS '사회탐구1',
+        (select score.score_point from tb_score score 
+		where score.score_season = '2024' 
+        and score.score_subject = '사회탐구2' 
+        and score.student_id = student.student_id) AS '사회탐구2'
+from tb_student_info student
+inner join tb_school_info school
+on student.school_id = school.school_id;
+
+SELECT (select school.school_name from tb_school_info school where school.school_id = student.school_id) AS '학교명',
+	   student.student_name,
+       if(student_graduate_yn='Y', '졸업생', '재학생') AS '재학여부',
+        fn_getScore('2024', '언어', student.student_id) AS '언어',
+        fn_getScore('2024', '영어', student.student_id) AS '영어',
+        fn_getScore('2024', '수학', student.student_id) AS '수학',
+        fn_getScore('2024', '사회탐구1', student.student_id) AS '사회탐구1',
+        fn_getScore('2024', '사회탐구2', student.student_id) AS '사회탐구2'
+FROM tb_student_info student
+INNER JOIN tb_score score
+ON student.student_id = score.student_id
+AND score.score_season = '2024'
+group by student.student_id;
+
+-- fn_getScore 함수 내부 쿼리
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_getScore`(
+	season varchar(4),
+    subject varchar(10),
+    studentId integer
+) RETURNS int
+BEGIN
+	
+    DECLARE scorePoint integer;
+    
+    DECLARE test varchar(10);
+    
+    select score.score_point from tb_score score 
+		where score.score_season = season
+        and score.score_subject = subject
+        and score.student_id = studentId
+	INTO scorePoint;
+    
+    set test = 'test';
+    
+RETURN scorePoint;
+END
