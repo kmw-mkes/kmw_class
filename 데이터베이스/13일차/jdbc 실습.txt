@@ -40,8 +40,17 @@ public class jdbc_test2 {
 				}
 				
 				try {
-					String sql = "";
-					
+					String sql = "SELECT  school.school_id AS schoolId, "
+							+ "		school.school_name as schoolName, "
+							+ "        school.school_area AS schoolArea, "
+							+ "        student.student_name AS studentName, "
+							+ "        '재학중' AS graduate "
+							+ "FROM tb_school_info school "
+							+ "INNER JOIN tb_student_info student "
+							+ "on school.school_id = student.school_id "
+							+ "and student.student_graduate_yn = 'N' "
+							+ "WHERE school.school_name = '우송고등학교'";
+					System.out.println(sql);
 					pstmt = conn.prepareStatement(sql);
 					
 					rs = pstmt.executeQuery();
@@ -49,13 +58,22 @@ public class jdbc_test2 {
 					
 					while(rs.next()) {
 						HashMap<String, Object> rsMap = new HashMap<String, Object>();
-						
+						rsMap.put("schoolId", rs.getInt("schoolId"));
+						rsMap.put("schoolName", rs.getString("schoolName"));
+						rsMap.put("schoolArea", rs.getString("schoolArea"));
+						rsMap.put("studentName", rs.getString("studentName"));
+						rsMap.put("graduate", rs.getString("graduate"));
 						list.add(rsMap);
 
 					}
-					System.out.println("학교ID\t학교이름\t학교지역\t학생이름\t졸업여부");
+					System.out.println("학교ID\t학교이름\t\t학교지역\t학생이름\t졸업여부");
 					for(int i = 0; i<list.size(); i++) {
-					
+						System.out.print(list.get(i).get("schoolId")+"\t");
+						System.out.print(list.get(i).get("schoolName")+"\t");
+						System.out.print(list.get(i).get("schoolArea")+"\t");
+						System.out.print(list.get(i).get("studentName")+"\t");
+						System.out.println(list.get(i).get("graduate")+"\t");		
+						
 					}
 				}catch (SQLException e) {
 					// TODO: handle exception
