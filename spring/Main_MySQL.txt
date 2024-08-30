@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MainDAO">
+
+	<select id="selectIdChk" parameterType="java.util.HashMap" resultType="int">
+		SELECT count(1)
+		FROM tb_member
+		WHERE member_id = #{accountId}
+	</select>
+	
+	<insert id="insertMember" parameterType="java.util.HashMap">
+	INSERT INTO tb_member
+	(
+		member_id,
+		member_pw,
+		member_name,
+		member_birth,
+		member_email,
+		create_id,
+		update_id)
+	VALUES (
+		#{accountId},
+		#{accountPwd},
+		#{accountName},
+		#{accountBirth},
+		#{accountEmail},
+		#{accountId},
+		#{accountId}
+	)
+	</insert>
+</mapper>
