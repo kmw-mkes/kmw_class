@@ -1,0 +1,13 @@
+CREATE TABLE `tb_reply` (
+  `reply_idx` int NOT NULL AUTO_INCREMENT,
+  `board_idx` int NOT NULL,
+  `parent_reply_idx` int DEFAULT NULL,
+  `reply_content` varchar(1000) DEFAULT NULL,
+  `create_id` varchar(45) NOT NULL,
+  `create_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `update_id` varchar(45) NOT NULL,
+  `update_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `reply_level` int DEFAULT '1',
+  `use_yn` char(1) DEFAULT 'Y',
+  PRIMARY KEY (`reply_idx`)
+) ENGINE=InnoDB AUTO_INCREMENT=0;
