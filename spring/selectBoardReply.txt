@@ -1,0 +1,35 @@
+with recursive cte as(
+			SELECT 1 AS reply_level,
+					reply_idx,
+		            reply_content,
+		            create_id,
+		            create_date,
+		            convert(reply_idx, char) as path,
+		            parent_reply_idx
+		    FROM tb_reply
+		    WHERE board_idx = #{boardIdx}
+		    AND parent_reply_idx is null
+		    AND use_yn ='Y'
+		    UNION ALL
+		    SELECT 1+cte.reply_level,
+					r.reply_idx,
+		            r.reply_content,
+		            r.create_id,
+		            r.create_date,
+		            concat(path, '-', r.reply_idx) as path,
+		            r.parent_reply_idx
+		    FROM tb_reply AS r
+		    inner join cte 
+		    on r.parent_reply_idx = cte.reply_idx
+		    WHERE r.board_idx = #{boardIdx}
+		    AND r.use_yn = 'Y'
+		)
+		select reply_idx AS replyIdx,
+				reply_content AS replyContent,
+		        create_id AS createId,
+		        DATE_FORMAT(create_date, '%Y-%m-%d %H:%i:%s') AS creaetDate,
+		        reply_level-1 AS replyLevel,
+		        path,
+		        parent_reply_idx AS parentReplyIdx
+		from cte
+		order by convert(substring_index(path, '-', 1), unsigned) desc, path
