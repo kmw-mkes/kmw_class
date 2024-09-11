@@ -1,0 +1,14 @@
+CREATE TABLE `tb_file_attr` (
+  `file_idx` int NOT NULL AUTO_INCREMENT,
+  `file_group_idx` int NOT NULL,
+  `file_original_name` varchar(1000) NOT NULL,
+  `save_file_name` varchar(1000) NOT NULL,
+  `save_file_path` varchar(1000) DEFAULT NULL,
+  `file_size` double DEFAULT NULL,
+  `file_ext` varchar(45) DEFAULT NULL,
+  `create_id` varchar(45) NOT NULL,
+  `create_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  `update_id` varchar(45) NOT NULL,
+  `update_date` timestamp(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+  PRIMARY KEY (`file_idx`)
+) ENGINE=InnoDB AUTO_INCREMENT=0;
